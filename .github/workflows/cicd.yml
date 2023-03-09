@@ -1,0 +1,18 @@
+name: CICD
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'public/**'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: |
+          npm install
+          npm lint
+          npm test

@@ -1,0 +1,68 @@
+scalar UserId
+
+type User {
+  id: UserId!
+  displayName: String!
+}
+
+scalar CalendarId
+
+type Calendar {
+  id: CalendarId!
+  displayName: String!
+  owner: User!
+}
+
+# Users can invite guests to collaborate on their calendars
+# Owners can restrict what their guests can do with permissions
+type Guest {
+  user: UserId!
+  calendar: CalendarId!
+  permission: CalendarPermission!
+}
+
+enum CalendarPermission {
+  READ
+  WRITE
+}
+
+# Every dinner has a menu
+type Menu {
+  calendar: Calendar!
+  date: Date!
+  attendance: [Attendance]
+  options: [MealOption]
+}
+
+scalar Date
+
+# Users can register their dinner attendance ahead of time
+type Attendance {
+  user: User!
+  isAttending: Boolean!
+}
+
+# Users add to the menu by suggesting meal options
+type MealOption {
+  suggester: User!
+  title: String!
+  description: String
+  votes: [Vote]
+}
+
+# Users upvote or downvote meal options
+type Vote {
+  voter: User!
+  upvote: Boolean!
+}
+
+type Query {
+  # Guests for a given user
+  guests(userId: UserId!): [Guest]
+
+  # Calendars for given a user (owner or guest status)
+  calendars(userId: UserId!): [Calendar]
+
+  # Menus for a given calendar on a given week
+  menus(calendarId: CalendarId!, mondayDate: Date!): [Menu]
+}
